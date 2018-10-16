@@ -135,6 +135,22 @@
         layer.beginTime = 0.0; // Need to reset to 0 to avoid flickering :S
         CFTimeInterval timeSincePause = [layer convertTime:CACurrentMediaTime() fromLayer:nil] - pausedTime;
         layer.beginTime = timeSincePause;
+    } else {
+        UIView *toView, *fromView;
+        if ([_transitionContext respondsToSelector:@selector(viewForKey:)]) {
+            toView = [_transitionContext viewForKey:UITransitionContextToViewKey];
+            fromView = [_transitionContext viewForKey:UITransitionContextFromViewKey];
+        }else{
+            toView = [_transitionContext viewControllerForKey:UITransitionContextToViewControllerKey].view;
+            fromView = [_transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey].view;
+        }
+        
+        toView.alpha = 0;
+        fromView.alpha = 1.0;
+        fromView.transform = CGAffineTransformIdentity;
+        
+        [[_transitionContext containerView] bringSubviewToFront:fromView];
+
     }
 }
 
